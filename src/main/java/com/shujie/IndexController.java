@@ -18,19 +18,16 @@ import com.shujie.User;
 import com.shujie.UserRepository;
 import com.shujie.UserService;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Sends the user to the views.
- *
- * @author Rob Winch
- * @since 5.0
- */
 @RestController
 @RequestMapping("/api")
 public class IndexController {
@@ -43,6 +40,7 @@ public class IndexController {
 
 
 	private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
+	
 	@GetMapping("/")
 	@ResponseBody
 	public String index() {
@@ -58,67 +56,75 @@ public class IndexController {
 		return "Hello!";
 	}
 	
-    // Read operation
-    @GetMapping("/test")
-    public String test()
-    {
-        return "ytest";
-    }
-    
-	@GetMapping("/error")
-	@ResponseBody
-	public String error() {
-		logger.info("This is an error message.");
-		return "Error!";
-	}
-	
+//    // Read operation
+//    @GetMapping("/test")
+//    public String test()
+//    {
+//        return "ytest";
+//    }
+//    
+//    @PostMapping("/testpost")
+//    public String testpost()
+//    {
+//    	logger.info("This is an test message.");
+//        return "ytest";
+//    }
+//    
+//	@GetMapping("/error")
+//	@ResponseBody
+//	public String error() {
+//		logger.info("This is an error message.");
+//		return "Error!";
+//	}
+//	
 	// Save operation
     @PostMapping("/users")
-    public ResponseEntity<SignUpDto> saveUser(@RequestBody SignUpDto user)
+    public Mono<User> saveUser(@RequestBody User user)
     {
     	logger.info("This is an signup message.");
-//        return userService.saveUser(user);.
-    	return ResponseEntity.status(HttpStatus.CREATED).body(user);
+        return userService.saveUser(user);
+//    	return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
  
-    public String fallbackMethod(User user, RuntimeException runtimeException) {
-    	return "Oops!";
-    }
+//    public String fallbackMethod(User user, RuntimeException runtimeException) {
+//    	return "Oops!";
+//    }
     
     // Read operation
     @GetMapping("/users")
-    public List<User> fetchUserList()
+    public Flux<User> fetchUserList()
     {
         return userService.fetchUserList();
     }
     
     //Get user by id
 	@GetMapping("{id}")
-	public User getById(@PathVariable("id") final Long id) {
-		System.out.println("::will return a Student record::");
-		return userService.getById(id);
+	public Mono<ResponseEntity<User>> getById(@PathVariable("id") final Long id) {
+		 Mono<User> user = userService.getById(id);
+	        return user.map( u -> ResponseEntity.ok(u))
+	                .defaultIfEmpty(ResponseEntity.notFound().build());
 	}
  
     // Update operation
     @PutMapping("/users/{id}")
- 
-    public User
+    public Mono<ResponseEntity<User>>
     updateUser(@RequestBody User user,
                      @PathVariable("id") Long userId)
     {
-        return userService.updateUser(
-            user, userId);
+    	  return userService.updateUser(user, userId)
+                  .map(updatedUser -> ResponseEntity.ok(updatedUser))
+                  .defaultIfEmpty(ResponseEntity.badRequest().build());
     }
  
     // Delete operation
     @DeleteMapping("/users/{id}")
  
-    public String deleteUserById(@PathVariable("id")
+    public Mono<ResponseEntity<Void>> deleteUserById(@PathVariable("id")
                                        Long userId)
     {
-        userService.deleteUserById(
-            userId);
-        return "Deleted Successfully";
-    }
+    	 return userService.deleteUserById(userId)
+                 .map( r -> ResponseEntity.ok().<Void>build())
+                 .defaultIfEmpty(ResponseEntity.notFound().build());
+     }
 
 }

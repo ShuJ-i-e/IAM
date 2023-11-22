@@ -2,13 +2,11 @@ package com.shujie;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 
-/**
- * Demonstrates how to make a webflux based application with a custom form log in.
- *
- * @author Rob Winch
- * @since 5.0
- */
+
+@EnableR2dbcRepositories
 @SpringBootApplication
 public class WebfluxFormApplication {
 

@@ -25,68 +25,68 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 import static org.springframework.security.config.Customizer.withDefaults;
-//
-///**
-// * WebFlux configuration for custom log in page.
-// *
-// * @author Rob Winch
-// * @since 5.0
-// */
-//@Configuration
-//@EnableWebFluxSecurity
-//public class WebfluxFormSecurityConfiguration{
-//
-////     @Bean
-////        public MapReactiveUserDetailsService userDetailsService() {
-////            UserDetails user = User
-////              .withUsername("user")
-////              .password("password")
-////              .roles("USER")
-////              .build();
 ////
-////            UserDetails admin = User
-////              .withUsername("admin")
-////              .password("password")
-////              .roles("ADMIN")
-////              .build();
+/////**
+//// * WebFlux configuration for custom log in page.
+//// *
+//// * @author Rob Winch
+//// * @since 5.0
+//// */
+////@Configuration
+////@EnableWebFluxSecurity
+////public class WebfluxFormSecurityConfiguration{
 ////
-////            return new MapReactiveUserDetailsService(user, admin);
-////        }
-//
-//      @Bean
-//      public PasswordEncoder passwordEncoder() {
-//          return new BCryptPasswordEncoder();
-//      }
-//
-//
-//  @Bean
-//  public MapReactiveUserDetailsService userDetailsService() {
-//     // @formatter:off
-//     UserDetails user = User.withDefaultPasswordEncoder()
-//        .username("user")
-//        .password("password")
-//        .roles("USER")
-//        .build();
-//     // @formatter:on
-//     return new MapReactiveUserDetailsService(user);
-//  }
-//
-////    @Bean
-////    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-////       // @formatter:off
-////       http
-////          .authorizeExchange((authorize) -> authorize
-////             .pathMatchers("/login").permitAll()
-////             .anyExchange().authenticated()
-////          )
-////          .httpBasic(withDefaults())
-////          .formLogin((form) -> form
-////             .loginPage("/login")
-////          );
-////       // @formatter:on
-////       return http.build();
-////    }
-//}
+//////     @Bean
+//////        public MapReactiveUserDetailsService userDetailsService() {
+//////            UserDetails user = User
+//////              .withUsername("user")
+//////              .password("password")
+//////              .roles("USER")
+//////              .build();
+//////
+//////            UserDetails admin = User
+//////              .withUsername("admin")
+//////              .password("password")
+//////              .roles("ADMIN")
+//////              .build();
+//////
+//////            return new MapReactiveUserDetailsService(user, admin);
+//////        }
+////
+////      @Bean
+////      public PasswordEncoder passwordEncoder() {
+////          return new BCryptPasswordEncoder();
+////      }
+////
+////
+////  @Bean
+////  public MapReactiveUserDetailsService userDetailsService() {
+////     // @formatter:off
+////     UserDetails user = User.withDefaultPasswordEncoder()
+////        .username("user")
+////        .password("password")
+////        .roles("USER")
+////        .build();
+////     // @formatter:on
+////     return new MapReactiveUserDetailsService(user);
+////  }
+////
+//////    @Bean
+//////    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+//////       // @formatter:off
+//////       http
+//////          .authorizeExchange((authorize) -> authorize
+//////             .pathMatchers("/login").permitAll()
+//////             .anyExchange().authenticated()
+//////          )
+//////          .httpBasic(withDefaults())
+//////          .formLogin((form) -> form
+//////             .loginPage("/login")
+//////          );
+//////       // @formatter:on
+//////       return http.build();
+//////    }
+////}
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,16 +100,18 @@ public class WebfluxFormSecurityConfiguration {
 
     @Bean
     public MapReactiveUserDetailsService userDetailsService() {
-        // @formatter:off
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("password")
+        UserDetails user = User.withUsername("user")
+                .password(passwordEncoder().encode("password"))
                 .roles("USER")
                 .build();
-        // @formatter:on
+
         return new MapReactiveUserDetailsService(user);
     }
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 //  @Bean
 //  public SecurityWebFilterChain SecurityFilterChain(ServerHttpSecurity http) {
 //     logger.info("This is an web security message.");
@@ -125,7 +127,7 @@ public class WebfluxFormSecurityConfiguration {
 //  import static org.springframework.security.authorization.AuthorityReactiveAuthorizationManager.hasRole;
     // ...
 //  @Bean
-//  public SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
+//  public SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) throws Exception{
 //     logger.info("This is an security message.");
 //     http
 //        .authorizeExchange((authorize) -> authorize
@@ -134,45 +136,7 @@ public class WebfluxFormSecurityConfiguration {
 //     return http.build();
 //  }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
-
-        /*
-        httpSecurity.authorizeHttpRequests(configurer ->
-                configurer
-                    .requestMatchers(HttpMethod.GET, "/employees")
-                        .hasRole("EMPLOYEE")
-                    .requestMatchers(HttpMethod.GET, "/employees/**")
-                        .hasRole("EMPLOYEE")
-                    .requestMatchers(HttpMethod.POST, "/employees")
-                        .hasRole("MANAGER")
-                    .requestMatchers(HttpMethod.PUT, "/employees")
-                        .hasRole("MANAGER")
-                    .requestMatchers(HttpMethod.DELETE, "/employees/**")
-                        .hasRole("ADMIN")
-        );
-         */
-
-        httpSecurity.authorizeHttpRequests(configurer ->
-                configurer
-                        .requestMatchers(HttpMethod.GET, "/employees").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/employees/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/employees").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/employees").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/employees/**").permitAll()
-        );
-
-
-        //USE HTTP basic config
-        httpSecurity.httpBasic(Customizer.withDefaults());
-
-        //disable Cross Site Request Forgery(CSRF)
-        //not required by stateless REST APIs that use POST, PUT . DELETE, PATCH
-        httpSecurity.csrf(csrf -> csrf.disable());
-
-        return httpSecurity.build();
-    }
-
+  
 //  @Bean
 //  public SecurityFilterChain springWebFilterChain(HttpSecurity http) throws Exception {
 //     http
@@ -265,4 +229,57 @@ public class WebfluxFormSecurityConfiguration {
 //     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 //  }
 //
+//}
+
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.http.HttpMethod;
+//import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+//import org.springframework.security.config.web.server.ServerHttpSecurity;
+//import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+//import org.springframework.security.core.userdetails.User;
+//import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.web.server.SecurityWebFilterChain;
+//
+//@Configuration
+//@EnableWebSecurity
+//public class WebfluxFormSecurityConfiguration {
+//
+//    @Bean
+//    public MapReactiveUserDetailsService userDetailsService() {
+//        UserDetails user = User.withUsername("user")
+//                .password(passwordEncoder().encode("password"))
+//                .roles("USER")
+//                .build();
+//
+//        return new MapReactiveUserDetailsService(user);
+//    }
+//
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
+//
+    @Bean
+    public SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
+    	logger.info("This is an security message.");
+        http
+                .authorizeExchange(exchanges ->
+                        exchanges
+                                .pathMatchers(HttpMethod.GET, "/api", "/api/**").permitAll()
+                                .pathMatchers(HttpMethod.POST, "/api", "/api/**").permitAll()
+                                .pathMatchers(HttpMethod.PUT, "/api", "/api/**").permitAll()
+                                .pathMatchers(HttpMethod.DELETE, "/api/**").permitAll()
+                                .pathMatchers(HttpMethod.GET, "/v3/api-docs", "/configuration/**", "/swagger/**", "/webjars/**").permitAll()
+                                .anyExchange().authenticated()
+                )
+                .httpBasic().and()
+                .formLogin().and()
+                .csrf().disable();
+
+        return http.build();
+    }
 }
+

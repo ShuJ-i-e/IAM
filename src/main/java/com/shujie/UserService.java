@@ -2,18 +2,33 @@ package com.shujie;
 
 import java.util.List;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import com.shujie.User;
 
 public interface UserService {
 	
-	User saveUser(User user);
+	Mono<User> saveUser(User user);
 	
-	List<User> fetchUserList();
+	Flux<User> fetchUserList();
 	
-	User updateUser(User user, Long userId);
+	Mono<User> updateUser(User user, Long userId);
 	
-	void deleteUserById(Long userId);
+	Mono<User> deleteUserById(Long userId);
 
-	User getById(Long userId);
+	Mono<User> getById(Long userId);
+	    
+	
+//	Mono<SignUpDto> saveUser(SignUpDto signupDto);
+//	
+//	Mono<SignUpDto> getUserById(Long userId);
+//	
+//	Flux<SignUpDto> getAllUsers();
+//	
+//	Mono<SignUpDto> updateUser(SignUpDto signupDto, Long userId);
+//	
+//	Mono<Void> deleteUserById(Long userId);
+
+	
 
 }

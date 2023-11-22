@@ -1,37 +1,71 @@
 package com.shujie;
 
 import java.util.Set;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+//import jakarta.persistence.Column;
+//import jakarta.persistence.Entity;
+//import jakarta.persistence.GeneratedValue;
+//import jakarta.persistence.GenerationType;
+//import jakarta.persistence.Id;
+//import jakarta.persistence.ManyToMany;
+//import jakarta.persistence.Table;
 
-@Entity
-@Table(name="users")
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table("users")
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    private String firstName;
-    private String lastname;
-    private String email;
-    private String about;
-    private String roles;
-    private String languages;
-    private String skills;
-    private String project_experiences;
-    private String assignments;
-    private String profilePic;
-	private String password;
-    @ManyToMany
     
-    public Integer getId() {
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
+	@Column("id")
+    private Long id;
+	
+	@Column("firstName")
+    private String firstName;
+	
+	@Column("lastName")
+    private String lastName;
+	
+	@Column("email")
+    private String email;
+	
+	@Column("about")
+    private String about;
+	
+	@Column("roles")
+    private String roles;
+	
+	@Column("languages")
+    private String languages;
+	
+	@Column("skills")
+    private String skills;
+	
+	@Column("project_experiences")
+    private String project_experiences;
+	
+	@Column("assignments")
+    private String assignments;
+	
+	@Column("profilePic")
+    private String profilePic;
+	
+	@Column("password")
+	private String password;
+    
+    public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getFirstName() {
@@ -41,10 +75,10 @@ public class User {
 		this.firstName = firstName;
 	}
 	public String getLastname() {
-		return lastname;
+		return lastName;
 	}
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
+	public void setLastname(String lastName) {
+		this.lastName = lastName;
 	}
 	public String getEmail() {
 		return email;
