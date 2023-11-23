@@ -24,7 +24,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("users")
 public class User {
     
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	@Column("id")
     private Long id;

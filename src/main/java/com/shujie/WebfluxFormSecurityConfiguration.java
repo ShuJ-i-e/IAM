@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -275,6 +276,10 @@ public class WebfluxFormSecurityConfiguration {
                                 .pathMatchers(HttpMethod.GET, "/v3/api-docs", "/configuration/**", "/swagger/**", "/webjars/**").permitAll()
                                 .anyExchange().authenticated()
                 )
+                .logout()
+                .logoutUrl("/signout")
+                .logoutSuccessHandler(new CustomLogoutSuccessHandler())
+                .and()
                 .httpBasic().and()
                 .formLogin().and()
                 .csrf().disable();

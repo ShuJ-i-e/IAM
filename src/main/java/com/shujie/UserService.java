@@ -17,6 +17,10 @@ public interface UserService {
 	Mono<User> deleteUserById(Long userId);
 
 	Mono<User> getById(Long userId);
+	
+	Mono<Object> signUp(User user);
+	
+	Mono<String> signIn(String email, String password);
 	    
 	
 //	Mono<SignUpDto> saveUser(SignUpDto signupDto);
