@@ -26,33 +26,15 @@ public class IndexController {
 	UserRepository userRepository;
 	
 	@Autowired
-	UserService userService;
-
+	UserServiceImpl userService;
 
 	private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
-	
-	@GetMapping("/")
-	@ResponseBody
-	public String index() {
-		logger.info("This is an informational message.");
-		return "index!";
-		
-	}
-
-	@GetMapping("/login")
-	@ResponseBody
-	public String login() {
-		logger.info("This is an login message.");
-		return "Hello!";
-	}
 	
 	// Save operation
     @PostMapping("/users")
     public Mono<User> saveUser(@RequestBody User user)
     {
-    	logger.info("This is an signup message.");
         return userService.saveUser(user);
-//    	return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     

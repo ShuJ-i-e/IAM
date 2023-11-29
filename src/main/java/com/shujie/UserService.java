@@ -21,18 +21,5 @@ public interface UserService {
 	Mono<Object> signUp(User user);
 	
 	Mono<String> signIn(String email, String password);
-	    
-	
-//	Mono<SignUpDto> saveUser(SignUpDto signupDto);
-//	
-//	Mono<SignUpDto> getUserById(Long userId);
-//	
-//	Flux<SignUpDto> getAllUsers();
-//	
-//	Mono<SignUpDto> updateUser(SignUpDto signupDto, Long userId);
-//	
-//	Mono<Void> deleteUserById(Long userId);
-
-	
 
 }

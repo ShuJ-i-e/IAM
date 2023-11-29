@@ -1,5 +1,6 @@
 package com.shujie;
 
+import java.util.Collection;
 import java.util.Set;
 //import jakarta.persistence.Column;
 //import jakarta.persistence.Entity;
@@ -16,17 +17,21 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("users")
-public class User {
+public class User{
     
 	@Id
 	@Column("id")
     private Long id;
+	
+	@Column("username")
+	private String username;
 	
 	@Column("firstName")
     private String firstName;
@@ -66,6 +71,12 @@ public class User {
 	}
 	public void setId(Long id) {
 		this.id = id;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	public String getFirstName() {
 		return firstName;
