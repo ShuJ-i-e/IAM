@@ -20,6 +20,6 @@ public interface UserService {
 	
 	Mono<Object> signUp(User user);
 	
-	Mono<String> signIn(String email, String password);
+//	Mono<String> signIn(String email, String password);
 
 }

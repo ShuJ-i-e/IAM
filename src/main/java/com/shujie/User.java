@@ -65,6 +65,9 @@ public class User{
 	
 	@Column("password")
 	private String password;
+	
+	 @Column("reset_password_token")
+	private String resetPasswordToken;
     
     public Long getId() {
 		return id;
@@ -144,5 +147,12 @@ public class User{
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	public String getResetPasswordToken() {
+		return resetPasswordToken;
+	}
+	public void setResetPasswordToken(String resetPasswordToken) {
+		this.resetPasswordToken = resetPasswordToken;
+	}
+	
      
 }

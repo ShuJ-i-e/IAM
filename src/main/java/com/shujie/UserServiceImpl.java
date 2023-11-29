@@ -92,13 +92,13 @@ public class UserServiceImpl implements UserService{
                 }));
     }
 
-    @Override
-    public Mono<String> signIn(String email, String password) {
-        // Find the user by email
+//    @Override
+//    public Mono<String> signIn(String email, String password) {
+////         Find the user by email
 //        return userRepository.findByEmail(email)
 //                .flatMap(user -> {
 //                    // Check if the entered password matches the stored hashed password
-//                    if (passwordEncoder().matches(password, user.getPassword())) {
+//                    if (passwordEncoder.matches(password, user.getPassword())) {
 //                        // Return a token or some indication of successful authentication
 //                        // For simplicity, returning a success message in this example
 //                        return Mono.just("Authentication successful");
@@ -108,46 +108,34 @@ public class UserServiceImpl implements UserService{
 //                    }
 //                })
 //                .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
-        return Mono.error(new RuntimeException("Invalid credentials"));
+//        return Mono.error(new RuntimeException("Invalid credentials"));
+//    }
+    
+    public void updateResetPasswordToken(String token, String email) throws RuntimeException {
+        Mono<User> user = userRepository.findByEmail(email);
+        if (user != null) {
+        	user.flatMap(dbUser -> {
+    			dbUser.setResetPasswordToken(dbUser.getResetPasswordToken());
+    			return userRepository.save(dbUser);
+    		});
+	
+        } else {
+            throw new RuntimeException("Could not find any customer with the email " + email);
+        }
+    }
+     
+    public User getByResetPasswordToken(String token) {
+        return userRepository.findByResetPasswordToken(token);
+    }
+     
+    public void updatePassword(User user, String newPassword) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+         
+        user.setResetPasswordToken(null);
+        userRepository.save(user);
     }
 
-//	@Override
-//	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//		Mono<User> userMono = userRepository.findByEmail(email);
-//		logger.info("got ma?");
-//		List<User> list = null;
-//		if(userMono == null){
-//	        throw new UsernameNotFoundException("No user found with email");
-//	    }
-//		User user = userMono.block();
-////        List<String> roles = Arrays.asList(user.getRoles());
-//        UserDetails userDetails =
-//                org.springframework.security.core.userdetails.User.builder()
-//                        .username(user.getEmail())
-//                        .password(user.getPassword())
-////                        .roles("USER")
-//                        .build();
-//        logger.info("halooooo");
-//        return (UserDetails) list.get(0);
-////        return userDetails;
-//    }
 
-//    @Override
-//    public Mono<UserDetails> findByUsername(String email) {
-//    	logger.info(email);
-//    	logger.info("findbyusername");
-//        return userRepository.findByEmail(email)
-//                .map(user -> org.springframework.security.core.userdetails.User.builder()
-//                      .username(user.getEmail())
-//                      .password(user.getPassword())
-////                      .roles("USER")
-//                      .build())
-//                .switchIfEmpty(Mono.error(() -> new UsernameNotFoundException("User not found: " + email)));
-//
-//    }
-
-
-//    private UserDetails createUserDetails(User user) {
-//        return new User(user.getUsername(), user.getPassword());  // Assuming you have a constructor
-//    }
 }

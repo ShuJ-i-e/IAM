@@ -26,4 +26,6 @@ public class UserDetailsServiceImpl implements ReactiveUserDetailsService {
 //                        .roles(user.getRole()) // Set roles or authorities here
                         .build());
     }
+    
+    
 }
