@@ -1,6 +1,7 @@
 package com.shujie;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.shujie.Repository.UserRepository;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -123,76 +126,85 @@ public class IndexController {
 //    }
 
 	@PostMapping("/forgot_password")
-	public String processForgotPassword(ServerHttpRequest request, @RequestBody String email) {
-		String token = RandomString.make(30);
-		userService.updateResetPasswordToken(token, email);
-		String resetPasswordLink = Utility.getSiteURL(request) + "/reset_password?token=" + token;
-
-		try {
-			sendEmail(email, resetPasswordLink);
-			logger.info("We have sent a reset password link to your email. Please check.");
-//            model.addAttribute("message", "We have sent a reset password link to your email. Please check.");
-
-		} catch (RuntimeException ex) {
-			logger.info("Error: " + ex.getMessage());
-//            model.addAttribute("error", ex.getMessage());
-		} catch (UnsupportedEncodingException | MessagingException e) {
-			logger.info("Error" + e.getMessage());
-//            model.addAttribute("error", "Error while sending email");
-		}
-
-		return resetPasswordLink;
+	public Mono<User> forgotPassword(@RequestBody Map<String, String> payload) {
+		String email = payload.get("email");
+	    if (email == null) {
+	        return Mono.error(new RuntimeException("Email is required in the request body"));
+	    }
+	    return userService.initiatePasswordReset(email);
+	}
+	
+	@PostMapping("/reset_password/{token}")
+	public Mono<Void> resetPassword(@PathVariable String token, @RequestBody Map<String, String> requestBody) {
+	    String newPassword = requestBody.get("newPassword");
+	    return userService.resetPassword(token, newPassword);
 	}
 
-	public void sendEmail(String recipientEmail, String link) throws MessagingException, UnsupportedEncodingException {
-		MimeMessage message = mailSender.createMimeMessage();
-		MimeMessageHelper helper = new MimeMessageHelper(message);
-		try {
-//        helper.setFrom("shujwong@deloitte.com");
-			helper.setTo(recipientEmail);
 
-			String subject = "Here's the link to reset your password";
 
-			String content = "<p>Hello,</p>" + "<p>You have requested to reset your password.</p>"
-					+ "<p>Click the link below to change your password:</p>" + "<p><a href=\"" + link
-					+ "\">Change my password</a></p>" + "<br>"
-					+ "<p>Ignore this email if you do remember your password, "
-					+ "or you have not made the request.</p>";
+//	@PostMapping("/reset_password/{token}")
+//	public Mono<Void> resetPassword(@PathVariable String token, @RequestParam String newPassword) {
+//		return userService.resetPassword(token, newPassword);
+//	}
 
-			helper.setSubject(subject);
+//	@PostMapping("/forgot_password")
+//	public String processForgotPassword(ServerHttpRequest request, @RequestBody String email) {
+//		String token = RandomString.make(30);
+//		userService.updateResetPasswordToken(token, email);
+////		String resetPasswordLink = Utility.getSiteURL(request) + "/reset_password?token=" + token;
+//		String resetPasswordLink = Utility.getSiteURL(request) + "/reset_password?token=" + token;
+//
+//		try {
+//			sendEmail(email, resetPasswordLink);
+//			logger.info("We have sent a reset password link to your email. Please check.");
+////            model.addAttribute("message", "We have sent a reset password link to your email. Please check.");
+//
+//		} catch (RuntimeException ex) {
+//			logger.info("Error: " + ex.getMessage());
+////            model.addAttribute("error", ex.getMessage());
+//		} catch (UnsupportedEncodingException | MessagingException e) {
+//			logger.info("Error" + e.getMessage());
+////            model.addAttribute("error", "Error while sending email");
+//		}
+//
+//		return resetPasswordLink;
+//	}
+//
+//	@PostMapping("/reset_password")
+//	public String processResetPassword(HttpServletRequest request, Model model) {
+//		String token = request.getParameter("token");
+//		String password = request.getParameter("password");
+//
+//		User user = userService.getByResetPasswordToken(token);
+//		model.addAttribute("title", "Reset your password");
+//
+//		if (user == null) {
+//			model.addAttribute("message", "Invalid Token");
+//			return "message";
+//		} else {
+//			userService.updatePassword(user, password);
+//
+//			model.addAttribute("message", "You have successfully changed your password.");
+//		}
+//
+//		return "message";
+//	}
 
-			helper.setText(content, true);
+	@PostMapping("/register")
+	public Mono<User> registerUser(@RequestBody Map<String, String> payload) {
+		String username = payload.get("username");
+		String email = payload.get("email");
+		String password = payload.get("password");
+		String role = payload.get("role");
 
-			mailSender.send(message);
-		} catch (MessagingException e) {
-			logger.info("error"+ e);
-//			e.printStackTrace(); // Handle the exception appropriately
-		}
+		return userService.registerUser(username, email, password, role);
+//        return userService.registerUser(username, password);
 	}
 
-//    @GetMapping("/reset_password")
-//    public String showResetPasswordForm() {
-// 
-//    }
-
-	@PostMapping("/reset_password")
-	public String processResetPassword(HttpServletRequest request, Model model) {
-		String token = request.getParameter("token");
-		String password = request.getParameter("password");
-
-		User user = userService.getByResetPasswordToken(token);
-		model.addAttribute("title", "Reset your password");
-
-		if (user == null) {
-			model.addAttribute("message", "Invalid Token");
-			return "message";
-		} else {
-			userService.updatePassword(user, password);
-
-			model.addAttribute("message", "You have successfully changed your password.");
-		}
-
-		return "message";
+	@GetMapping("/verify-email/{verificationToken}")
+	public Mono<String> verifyEmail(@PathVariable String verificationToken) {
+		return userService.verifyEmail(verificationToken).map(user -> "Email verified successfully.")
+				.defaultIfEmpty("Invalid verification token.");
 	}
 
 }

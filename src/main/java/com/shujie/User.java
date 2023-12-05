@@ -1,24 +1,16 @@
 package com.shujie;
 
-import java.util.Collection;
-import java.util.Set;
-//import jakarta.persistence.Column;
-//import jakarta.persistence.Entity;
-//import jakarta.persistence.GeneratedValue;
-//import jakarta.persistence.GenerationType;
-//import jakarta.persistence.Id;
-//import jakarta.persistence.ManyToMany;
-//import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import reactor.core.publisher.Mono;
 @Data
 @Builder
 @NoArgsConstructor
@@ -66,8 +58,17 @@ public class User{
 	@Column("password")
 	private String password;
 	
-	 @Column("reset_password_token")
+	@Column("reset_password_token")
 	private String resetPasswordToken;
+	 
+	@Column("verificationToken")
+	private String verificationToken;
+	
+	@Column("verificationTokenCreationTime")
+	private LocalDateTime verificationTokenCreationTime;
+	
+	@Column("verified")
+	private boolean verified;
     
     public Long getId() {
 		return id;
@@ -153,6 +154,24 @@ public class User{
 	public void setResetPasswordToken(String resetPasswordToken) {
 		this.resetPasswordToken = resetPasswordToken;
 	}
-	
+	public String getVerificationToken() {
+		return verificationToken;
+	}
+	public void setVerificationToken(String verificationToken) {
+		this.verificationToken = verificationToken;
+	}
+	public LocalDateTime getVerificationTokenCreationTime() {
+		return verificationTokenCreationTime;
+	}
+	public void setVerificationTokenCreationTime(LocalDateTime verificationTokenCreationTime) {
+		this.verificationTokenCreationTime = verificationTokenCreationTime;
+	}
+	public boolean isVerified() {
+		return verified;
+	}
+	public void setVerified(boolean verified) {
+		this.verified = verified;
+	}
+
      
 }

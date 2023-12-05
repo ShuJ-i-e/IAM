@@ -20,6 +20,10 @@ public interface UserService {
 	
 	Mono<Object> signUp(User user);
 	
+	Mono<User> registerUser(String username, String email, String password, String role);
+
+    Mono<User> verifyEmail(String verificationToken);
+	
 //	Mono<String> signIn(String email, String password);
 
 }
