@@ -96,7 +96,7 @@ public class WebfluxFormSecurityConfiguration {
         http
                 .authorizeExchange(exchanges ->
                         exchanges
-                                .pathMatchers(HttpMethod.GET, "/api","/api/**").permitAll()
+                                .pathMatchers(HttpMethod.GET, "/api","/api/**", "/v3/**","/**", "/api-docs").permitAll()
                                 .pathMatchers(HttpMethod.POST, "/api", "/register", "/api/**").permitAll()
                                 .pathMatchers(HttpMethod.PUT, "/api", "/api/**").permitAll()
                                 .pathMatchers(HttpMethod.DELETE, "/api/**").permitAll()

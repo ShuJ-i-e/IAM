@@ -1,6 +1,4 @@
 package com.shujie;
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.server.reactive.ServerHttpRequest;
 
 public class Utility {
