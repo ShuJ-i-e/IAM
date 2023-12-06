@@ -1,4 +1,4 @@
-package com.shujie;
+package com.shujie.Service;
 
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
@@ -26,7 +26,6 @@ public class UserDetailsServiceImpl implements ReactiveUserDetailsService {
                 .map(user -> User.builder()
                         .username(user.getEmail())
                         .password(user.getPassword())
-//                        .roles(user.getRole()) // Set roles or authorities here
                         .build());
     }
     

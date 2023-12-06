@@ -1,10 +1,10 @@
-package com.shujie;
+package com.shujie.Service;
 
 import java.util.List;
 
+import Entity.User;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import com.shujie.User;
 
 public interface UserService {
 	
@@ -18,9 +18,9 @@ public interface UserService {
 
 	Mono<User> getById(Long userId);
 	
-	Mono<Object> signUp(User user);
+//	Mono<Object> signUp(User user);
 	
-	Mono<User> registerUser(String username, String email, String password, String role);
+	Mono<Object> registerUser(String username, String email, String password, String role);
 
     Mono<User> verifyEmail(String verificationToken);
 	
